@@ -3,9 +3,14 @@ const formatResponse = require('../src/formatResponseFromIEX');
 
 const assert = require('assert');
 const nock = require('nock');
+const axios = require('axios');
+const _ = require('lodash');
 
+// ***********************
+//      FUNCTION TESTS
+// ***********************
 // Setting up nock for the testing of getLastPrice
-// first request: normal answer
+// 1) normal answer
 nock('https://api.iextrading.com')
   .get('/1.0/tops/last?symbols=AAPL')
   .reply(200, [
@@ -16,15 +21,12 @@ nock('https://api.iextrading.com')
       time: 150,
     },
   ]);
-// second request: IEX API error
+// 2) IEX API error
 nock('https://api.iextrading.com')
   .get('/1.0/tops/last?symbols=AAPL')
   .replyWithError([{ }]);
 
-
-// ****************
-//      TESTS
-// ****************
+// Function tests
 describe('Testing getLastPrice', () => {
   it('should return an object (not an array of one)', () => getLastPrice('AAPL').then((result) => {
     assert(JSON.stringify(result) === JSON.stringify({
@@ -54,5 +56,43 @@ describe('Testing formatResponse', () => {
     const argument = 'error';
     const expectedReply = 'Sorry, for some reason we couldnt get the price from IEX. Try again.';
     assert(formatResponse(argument) === expectedReply);
+  });
+});
+
+// ***********************
+//      API TEST
+// ***********************
+// Configuring axios
+const IEX = axios.create({
+  baseURL: 'https://api.iextrading.com',
+});
+
+describe('Testing that IEX API behaves as expected', () => {
+  it('should return an array of one object with 4 known keys', () => {
+    nock.cleanAll();
+    return IEX.get('/1.0/tops/last?symbols=FB').then((result) => {
+      const keys = Object.keys(result.data[0]);
+      assert(_.isEqual(keys, ['symbol', 'price', 'size', 'time']));
+    });
+  });
+  it('price key should be of-type number', () => {
+    nock.cleanAll();
+    return IEX.get('/1.0/tops/last?symbols=FB').then((result) => {
+      const stock = result.data[0];
+      assert(typeof stock.price === 'number');
+    });
+  });
+  it('symbol key should be of-type string', () => {
+    nock.cleanAll();
+    return IEX.get('/1.0/tops/last?symbols=FB').then((result) => {
+      const stock = result.data[0];
+      assert(typeof stock.symbol === 'string');
+    });
+  });
+  it('should handle errors as expected', () => {
+    nock.cleanAll();
+    return IEX.get('/1.0/tops/last?symbols=FBBBSHKZ').then((result) => {
+      assert(_.isEqual(result.data, [{}]));
+    });
   });
 });
