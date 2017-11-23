@@ -16,5 +16,5 @@ module.exports = function getLastPrice(ticker: string) : Promise <{symbol: strin
   // Creating the path for the axios request
   const path = `/tops/last?symbols=${ticker}`;
 
-  return IEX.get(path).then(response => response.data[0]).catch(error => error);
+  return IEX.get(path).then(response => response.data[0]).catch(() => 'error');
 };
