@@ -4,7 +4,6 @@ const formatResponse = require('../src/formatResponseFromIEX');
 const assert = require('assert');
 const nock = require('nock');
 const axios = require('axios');
-const _ = require('lodash');
 
 // ***********************
 //      FUNCTION TESTS
@@ -68,31 +67,23 @@ const IEX = axios.create({
 });
 
 describe('Testing that IEX API behaves as expected', () => {
-  it('should return an array of one object with 4 known keys', () => {
+  beforeEach(() => {
     nock.cleanAll();
-    return IEX.get('/1.0/tops/last?symbols=FB').then((result) => {
-      const keys = Object.keys(result.data[0]);
-      assert(_.isEqual(keys, ['symbol', 'price', 'size', 'time']));
-    });
   });
-  it('price key should be of-type number', () => {
-    nock.cleanAll();
-    return IEX.get('/1.0/tops/last?symbols=FB').then((result) => {
-      const stock = result.data[0];
-      assert(typeof stock.price === 'number');
-    });
-  });
-  it('symbol key should be of-type string', () => {
-    nock.cleanAll();
-    return IEX.get('/1.0/tops/last?symbols=FB').then((result) => {
-      const stock = result.data[0];
-      assert(typeof stock.symbol === 'string');
-    });
-  });
-  it('should handle errors as expected', () => {
-    nock.cleanAll();
-    return IEX.get('/1.0/tops/last?symbols=FBBBSHKZ').then((result) => {
-      assert(_.isEqual(result.data, [{}]));
-    });
-  });
+
+  it('should return an array of one object with 4 known keys', () => IEX.get('/1.0/tops/last?symbols=FB').then((result) => {
+    const keys = Object.keys(result.data[0]);
+    assert.deepEqual(keys, ['symbol', 'price', 'size', 'time']);
+  }));
+  it('price key should be of-type number', () => IEX.get('/1.0/tops/last?symbols=FB').then((result) => {
+    const stock = result.data[0];
+    assert(typeof stock.price === 'number');
+  }));
+  it('symbol key should be of-type string', () => IEX.get('/1.0/tops/last?symbols=FB').then((result) => {
+    const stock = result.data[0];
+    assert(typeof stock.symbol === 'string');
+  }));
+  it('should handle errors as expected', () => IEX.get('/1.0/tops/last?symbols=FBBBSHKZ').then((result) => {
+    assert.deepEqual(result.data, [{}]);
+  }));
 });
