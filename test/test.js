@@ -1,4 +1,4 @@
-const getLastPrice = require('../src/getLastPrice');
+const getLastPrice = require('../src/getLastPriceFromIEX');
 
 const assert = require('assert');
 
