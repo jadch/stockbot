@@ -8,11 +8,11 @@ const IEX = axios.create({
 
 
 /**
- * Gets the latest stock price on IEX
- * @param {string} ticker The fstock ticker.
+ * Gets the latest stock price from IEX.
+ * @param {string} ticker The stock ticker.
  * @returns {string} A message indicating the latest stock price.
  */
-module.exports = function getLastPrice(ticker: string) {
+module.exports = function getLastPrice(ticker: string) : Promise <string> {
   // Creating the path for the axios request
   const path = `/tops/last?symbols=${ticker}`;
 
