@@ -24,5 +24,9 @@
     "flow-remove-types": "^1.2.3",
     "mocha": "^4.0.1",
     "nyc": "^11.3.0"
+  },
+  "dependencies": {
+    "axios": "^0.17.1",
+    "jsonfile": "^4.0.0"
   }
 }
