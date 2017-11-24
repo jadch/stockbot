@@ -1,9 +1,12 @@
 const getLastPrice = require('../src/getLastPriceFromIEX');
 const formatResponse = require('../src/formatResponseFromIEX');
+// const lastPrice = require('../src/index');
 
 const assert = require('assert');
 const nock = require('nock');
 const axios = require('axios');
+const sinon = require('sinon');
+// const request = require('request');
 
 // ***********************
 //      FUNCTION TESTS
@@ -86,4 +89,26 @@ describe('Testing that IEX API behaves as expected', () => {
   it('should handle errors as expected', () => IEX.get('/1.0/tops/last?symbols=FBBBSHKZ').then((result) => {
     assert.deepEqual(result.data, [{}]);
   }));
+});
+
+// ***********************
+//      index.js TEST
+// ***********************
+const obj = {};
+obj.sum = function sum(a, b) {
+  return a + b;
+};
+
+describe('Testing index.js', () => {
+  beforeEach(() => {
+    sinon.stub(obj, 'sum').returns(4);
+  });
+
+  it('testing sinon', () => {
+    assert(obj.sum(2, 1) === 4);
+  });
+});
+
+describe('Testing Sinon 2', () => {
+
 });
