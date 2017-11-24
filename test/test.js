@@ -52,7 +52,7 @@ describe('Testing formatResponse', () => {
       size: 100,
       time: 150,
     };
-    assert(formatResponse(argument) === 'The latest AAPL price on IEX is 10');
+    assert(formatResponse(argument) === 'The latest AAPL price on IEX is $10');
   });
   it('should format correctly error messages', () => {
     const argument = 'error';
